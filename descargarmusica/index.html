@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Descargar Música 320kbps | Directo</title>
+    <title>Music Downloader | 320kbps Direct</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root { --accent: #00f2fe; --bg: #0b0e14; }
@@ -13,14 +13,13 @@
             font-family: 'Inter', sans-serif;
             background: var(--bg);
             color: white;
-            height: 100vh;
+            min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            background-image: radial-gradient(circle at center, #1a1c25 0%, #0a0b10 100%);
         }
 
-        .container {
+        .card {
             background: rgba(255, 255, 255, 0.05);
             backdrop-filter: blur(20px);
             padding: 40px;
@@ -32,92 +31,103 @@
             box-shadow: 0 25px 50px rgba(0,0,0,0.5);
         }
 
-        h1 { font-size: 1.8rem; margin-bottom: 10px; color: var(--accent); }
-        p { opacity: 0.6; margin-bottom: 25px; font-size: 0.9rem; }
+        h1 { color: var(--accent); margin-bottom: 10px; font-size: 1.8rem; }
+        p { opacity: 0.7; margin-bottom: 25px; }
 
-        input {
+        .input-box {
             width: 100%;
             padding: 15px;
-            background: rgba(0,0,0,0.4);
+            background: rgba(0,0,0,0.5);
             border: 1px solid rgba(255,255,255,0.2);
-            border-radius: 12px;
+            border-radius: 15px;
             color: white;
+            font-size: 1rem;
             margin-bottom: 20px;
             outline: none;
-            font-size: 1rem;
         }
 
-        input:focus { border-color: var(--accent); }
+        .input-box:focus { border-color: var(--accent); }
 
-        .btn-convert {
+        .dl-button {
             width: 100%;
-            padding: 15px;
+            padding: 16px;
             background: var(--accent);
-            border: none;
-            border-radius: 12px;
             color: #000;
+            border: none;
+            border-radius: 15px;
             font-weight: 800;
+            font-size: 1rem;
             cursor: pointer;
             transition: 0.3s;
-            margin-bottom: 20px;
+            text-decoration: none;
+            display: inline-block;
         }
 
-        .btn-convert:hover { transform: scale(1.02); box-shadow: 0 0 20px rgba(0,242,254,0.4); }
+        .dl-button:hover { transform: translateY(-2px); box-shadow: 0 5px 20px rgba(0,242,254,0.3); }
 
-        /* Contenedor del Botón Real de Descarga */
-        #download-area {
-            margin-top: 10px;
-            min-height: 50px;
+        #result-area {
+            margin-top: 25px;
             display: none;
-            background: rgba(255,255,255,0.05);
-            padding: 15px;
-            border-radius: 15px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            padding-top: 20px;
         }
 
-        iframe {
-            width: 100%;
-            height: 60px;
-            border: none;
-            overflow: hidden;
-        }
+        .status { color: var(--accent); font-size: 0.9rem; margin-top: 10px; }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <i class="fas fa-bolt" style="color: var(--accent); font-size: 2.5rem; margin-bottom: 15px;"></i>
-        <h1>Music Downloader</h1>
-        <p>Pega el link de YouTube abajo para generar tu MP3</p>
+    <div class="card">
+        <i class="fas fa-music" style="font-size: 3rem; color: var(--accent); margin-bottom: 20px;"></i>
+        <h1>Descargador MP3</h1>
+        <p>Pega el link de YouTube y descarga en alta calidad</p>
 
-        <input type="text" id="videoUrl" placeholder="https://www.youtube.com/watch?v=...">
+        <input type="text" id="videoUrl" class="input-box" placeholder="https://www.youtube.com/watch?v=...">
         
-        <button class="btn-convert" onclick="generateDownload()">
-            <i class="fas fa-magic"></i> GENERAR BOTÓN DE DESCARGA
+        <button onclick="prepareDownload()" id="mainBtn" class="dl-button">
+            <i class="fas fa-cog"></i> PROCESAR ENLACE
         </button>
 
-        <div id="download-area">
-            <p style="margin-bottom: 10px; color: var(--accent);">¡Listo! Haz clic abajo:</p>
-            <div id="iframe-container"></div>
+        <div id="result-area">
+            <p>El botón de descarga está listo:</p>
+            <div id="button-container"></div>
+            <div class="status" id="msg">Preparando servidor de audio...</div>
         </div>
     </div>
 
     <script>
-        function generateDownload() {
+        function prepareDownload() {
             const url = document.getElementById('videoUrl').value;
-            const area = document.getElementById('download-area');
-            const container = document.getElementById('iframe-container');
+            const resArea = document.getElementById('result-area');
+            const container = document.getElementById('button-container');
+            const msg = document.getElementById('msg');
 
-            if (!url || !url.includes("youtu")) {
-                alert("Por favor inserta un link de YouTube válido");
+            if (!url.includes("youtu")) {
+                alert("Inserta un link válido de YouTube");
                 return;
             }
 
-            // Mostramos el área de descarga
-            area.style.display = "block";
-            
-            // Insertamos un Widget de conversión directo que genera el botón ahí mismo
-            // Este servicio es de los más limpios para integrar en webs estáticas
-            container.innerHTML = `<iframe src="https://convert2mp3s.com/api/button/mp3?url=${encodeURIComponent(url)}" vspace="0" hspace="0" scrolling="no" frameborder="0"></iframe>`;
+            resArea.style.display = "block";
+            msg.innerText = "Generando archivos de 320kbps...";
+
+            // Servicio 1: yt-download.org (Muy estable para botones embebidos)
+            // Extraemos el ID del video
+            let videoId = "";
+            if(url.includes("v=")) {
+                videoId = url.split("v=")[1].split("&")[0];
+            } else {
+                videoId = url.split("/").pop();
+            }
+
+            // Insertamos el botón de descarga real
+            container.innerHTML = `
+                <iframe src="https://backend.clonamp3.com/api/widget?url=${encodeURIComponent(url)}" 
+                width="100%" height="70px" scrolling="no" style="border:none;"></iframe>
+            `;
+
+            setTimeout(() => {
+                msg.innerText = "Haz clic en el botón que apareció arriba ↑";
+            }, 2000);
         }
     </script>
 </body>
