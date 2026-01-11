@@ -3,49 +3,48 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MP3 Downloader Directo</title>
+    <title>Buscador de Música Gratis</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        body { font-family: sans-serif; background: #111; color: white; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; }
-        .card { background: #222; padding: 30px; border-radius: 15px; text-align: center; width: 90%; max-width: 400px; border: 1px solid #444; }
-        h1 { color: #00ff88; margin-bottom: 20px; }
-        input { width: 100%; padding: 12px; margin-bottom: 20px; border-radius: 5px; border: 1px solid #444; background: #000; color: white; box-sizing: border-box; }
-        button { width: 100%; padding: 15px; border-radius: 5px; background: #00ff88; color: black; border: none; font-weight: bold; cursor: pointer; font-size: 1rem; }
-        button:hover { background: #00cc6e; }
-        p { font-size: 0.8rem; color: #888; margin-top: 15px; }
+        body { font-family: 'Segoe UI', sans-serif; background: #0b0e14; color: white; text-align: center; padding: 50px 20px; }
+        .box { background: #161b22; padding: 30px; border-radius: 20px; max-width: 400px; margin: auto; border: 1px solid #30363d; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        h1 { color: #22c55e; margin-bottom: 20px; }
+        input { width: 100%; padding: 15px; border-radius: 10px; border: 1px solid #30363d; background: #010409; color: white; margin-bottom: 20px; box-sizing: border-box; font-size: 1rem; }
+        .btn { width: 100%; padding: 15px; border-radius: 10px; background: #22c55e; color: black; border: none; font-weight: bold; cursor: pointer; font-size: 1.1rem; }
+        .btn:hover { background: #4ade80; }
+        .info { margin-top: 20px; font-size: 0.8rem; color: #8b949e; }
     </style>
 </head>
 <body>
 
-<div class="card">
-    <h1>Descargar Música</h1>
-    <input type="text" id="link" placeholder="Pega el link de YouTube aquí">
-    <button onclick="bajar()">DESCARGAR MP3</button>
-    <p>Se abrirá una pestaña con el convertidor directo.</p>
-</div>
-
-<script>
-    function bajar() {
-        var input = document.getElementById('link').value.trim();
-        if (input === "") {
-            alert("Pega un link primero");
-            return;
-        }
+    <div class="box">
+        <i class="fas fa-search" style="font-size: 3rem; color: #22c55e; margin-bottom: 15px;"></i>
+        <h1>Busca tu Música</h1>
+        <p style="margin-bottom: 20px; opacity: 0.8;">Escribe el nombre de la canción o el artista</p>
         
-        // Limpiamos el link para evitar errores de redirección
-        var videoId = "";
-        if (input.includes("v=")) {
-            videoId = input.split("v=")[1].split("&")[0];
-        } else if (input.includes("youtu.be/")) {
-            videoId = input.split("youtu.be/")[1].split("?")[0];
-        } else {
-            videoId = input; // Por si pegan solo el ID
-        }
+        <input type="text" id="song" placeholder="Ej: La Morocha - Luck Ra">
+        
+        <button class="btn" onclick="buscar()">
+            <i class="fas fa-play"></i> BUSCAR PARA BAJAR
+        </button>
 
-        // Este motor es el que mejor funciona con links externos
-        var urlFinal = "https://www.y2mate.com/youtube/" + videoId;
-        window.open(urlFinal, '_blank');
-    }
-</script>
+        <div class="info">
+            Busca directamente archivos MP3 listos para descargar.
+        </div>
+    </div>
+
+    <script>
+        function buscar() {
+            var q = document.getElementById('song').value.trim();
+            if (q === "") {
+                alert("Escribe el nombre de una canción");
+                return;
+            }
+            // Este buscador es directo y no tiene los bloqueos de YouTube
+            var url = "https://myfreemp3.to/search/" + encodeURIComponent(q);
+            window.open(url, '_blank');
+        }
+    </script>
 
 </body>
 </html>
