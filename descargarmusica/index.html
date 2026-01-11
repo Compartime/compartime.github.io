@@ -3,131 +3,122 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Music Downloader | 320kbps Direct</title>
+    <title>Quick Music Downloader</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root { --accent: #00f2fe; --bg: #0b0e14; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
-
         body {
-            font-family: 'Inter', sans-serif;
-            background: var(--bg);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #0f172a;
             color: white;
-            min-height: 100vh;
+            height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
         }
-
-        .card {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(20px);
+        .main-card {
+            background: #1e293b;
             padding: 40px;
-            border-radius: 30px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
             width: 90%;
-            max-width: 500px;
+            max-width: 450px;
             text-align: center;
-            box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+            border: 1px solid #334155;
         }
-
-        h1 { color: var(--accent); margin-bottom: 10px; font-size: 1.8rem; }
-        p { opacity: 0.7; margin-bottom: 25px; }
-
-        .input-box {
-            width: 100%;
-            padding: 15px;
-            background: rgba(0,0,0,0.5);
-            border: 1px solid rgba(255,255,255,0.2);
-            border-radius: 15px;
-            color: white;
-            font-size: 1rem;
-            margin-bottom: 20px;
-            outline: none;
-        }
-
-        .input-box:focus { border-color: var(--accent); }
-
-        .dl-button {
+        h1 { font-size: 1.8rem; margin-bottom: 8px; color: #38bdf8; }
+        p { color: #94a3b8; margin-bottom: 30px; font-size: 0.9rem; }
+        
+        .input-group { margin-bottom: 20px; }
+        input {
             width: 100%;
             padding: 16px;
-            background: var(--accent);
-            color: #000;
+            border-radius: 12px;
+            border: 2px solid #334155;
+            background: #0f172a;
+            color: white;
+            font-size: 1rem;
+            outline: none;
+            transition: 0.3s;
+        }
+        input:focus { border-color: #38bdf8; }
+
+        .btn-download {
+            width: 100%;
+            padding: 16px;
+            background: #38bdf8;
+            color: #0f172a;
             border: none;
-            border-radius: 15px;
+            border-radius: 12px;
             font-weight: 800;
             font-size: 1rem;
             cursor: pointer;
             transition: 0.3s;
-            text-decoration: none;
-            display: inline-block;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
         }
+        .btn-download:hover { background: #7dd3fc; transform: translateY(-2px); }
 
-        .dl-button:hover { transform: translateY(-2px); box-shadow: 0 5px 20px rgba(0,242,254,0.3); }
-
-        #result-area {
-            margin-top: 25px;
+        #loading {
+            margin-top: 20px;
             display: none;
-            border-top: 1px solid rgba(255,255,255,0.1);
-            padding-top: 20px;
+            color: #38bdf8;
+            font-weight: bold;
         }
-
-        .status { color: var(--accent); font-size: 0.9rem; margin-top: 10px; }
     </style>
 </head>
 <body>
 
-    <div class="card">
-        <i class="fas fa-music" style="font-size: 3rem; color: var(--accent); margin-bottom: 20px;"></i>
+    <div class="main-card">
+        <i class="fas fa-cloud-arrow-down" style="font-size: 3rem; color: #38bdf8; margin-bottom: 20px;"></i>
         <h1>Descargador MP3</h1>
-        <p>Pega el link de YouTube y descarga en alta calidad</p>
+        <p>Alta calidad 320kbps • Sin publicidad</p>
 
-        <input type="text" id="videoUrl" class="input-box" placeholder="https://www.youtube.com/watch?v=...">
-        
-        <button onclick="prepareDownload()" id="mainBtn" class="dl-button">
-            <i class="fas fa-cog"></i> PROCESAR ENLACE
+        <div class="input-group">
+            <input type="text" id="videoUrl" placeholder="Pega el link de YouTube aquí...">
+        </div>
+
+        <button class="btn-download" onclick="downloadMusic()">
+            <i class="fas fa-play"></i> DESCARGAR AHORA
         </button>
 
-        <div id="result-area">
-            <p>El botón de descarga está listo:</p>
-            <div id="button-container"></div>
-            <div class="status" id="msg">Preparando servidor de audio...</div>
-        </div>
+        <div id="loading">Procesando descarga...</div>
     </div>
 
     <script>
-        function prepareDownload() {
+        function downloadMusic() {
             const url = document.getElementById('videoUrl').value;
-            const resArea = document.getElementById('result-area');
-            const container = document.getElementById('button-container');
-            const msg = document.getElementById('msg');
+            const loading = document.getElementById('loading');
 
-            if (!url.includes("youtu")) {
-                alert("Inserta un link válido de YouTube");
+            if (!url || !url.includes("youtu")) {
+                alert("Por favor pega un enlace válido de YouTube");
                 return;
             }
 
-            resArea.style.display = "block";
-            msg.innerText = "Generando archivos de 320kbps...";
+            loading.style.display = "block";
 
-            // Servicio 1: yt-download.org (Muy estable para botones embebidos)
-            // Extraemos el ID del video
-            let videoId = "";
-            if(url.includes("v=")) {
-                videoId = url.split("v=")[1].split("&")[0];
-            } else {
-                videoId = url.split("/").pop();
-            }
+            // Usamos el servicio mp3.support que es de los más rápidos y limpios
+            // Redirige directamente al proceso de descarga sin iframes molestos
+            const downloadUrl = `https://www.y2mate.com/youtube/${extractId(url)}`;
+            
+            // Opción B: Servicio de descarga directa por ID
+            const videoId = extractId(url);
+            const directApi = `https://api.vevioz.com/api/button/mp3/${videoId}`;
 
-            // Insertamos el botón de descarga real
-            container.innerHTML = `
-                <iframe src="https://backend.clonamp3.com/api/widget?url=${encodeURIComponent(url)}" 
-                width="100%" height="70px" scrolling="no" style="border:none;"></iframe>
-            `;
+            // Abrimos la API de descarga directa
+            window.location.href = directApi;
 
             setTimeout(() => {
-                msg.innerText = "Haz clic en el botón que apareció arriba ↑";
-            }, 2000);
+                loading.style.display = "none";
+            }, 5000);
+        }
+
+        function extractId(url) {
+            const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+            const match = url.match(regExp);
+            return (match && match[2].length == 11) ? match[2] : null;
         }
     </script>
 </body>
