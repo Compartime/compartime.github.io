@@ -3,77 +3,88 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MP3 Downloader | 100% Funcional</title>
+    <title>Descargador MP3 Directo</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root { --main: #38bdf8; --bg: #0f172a; }
+        :root { --accent: #00f2fe; --bg: #0b0e14; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
         body {
-            font-family: 'Segoe UI', sans-serif;
+            font-family: 'Inter', sans-serif;
             background: var(--bg); color: white;
-            display: flex; align-items: center; justify-content: center;
-            height: 100vh; margin: 0;
+            height: 100vh; display: flex; align-items: center; justify-content: center;
         }
+
         .card {
-            background: #1e293b; padding: 40px; border-radius: 30px;
-            width: 90%; max-width: 420px; text-align: center;
-            border: 1px solid #334155; box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            background: rgba(255, 255, 255, 0.05);
+            padding: 40px; border-radius: 30px;
+            width: 90%; max-width: 450px; text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
         }
-        h1 { color: var(--main); margin-bottom: 10px; font-size: 2rem; }
-        p { color: #94a3b8; margin-bottom: 25px; }
+
+        h1 { color: var(--accent); margin-bottom: 20px; font-size: 1.8rem; }
+        
         input {
             width: 100%; padding: 15px; border-radius: 12px;
-            border: 2px solid #334155; background: #0f172a;
-            color: white; font-size: 1rem; margin-bottom: 20px; outline: none;
+            border: 1px solid #334155; background: #000;
+            color: white; margin-bottom: 20px; outline: none;
         }
-        input:focus { border-color: var(--main); }
-        .btn-descargar {
-            width: 100%; padding: 16px; border-radius: 12px;
-            background: var(--main); color: #0f172a;
+
+        .btn-gen {
+            width: 100%; padding: 15px; border-radius: 12px;
+            background: var(--accent); color: #000;
             border: none; font-weight: 800; cursor: pointer;
-            font-size: 1.1rem; transition: 0.3s;
+            font-size: 1rem; transition: 0.3s;
         }
-        .btn-descargar:hover { background: #7dd3fc; transform: scale(1.03); }
+
+        #download-frame {
+            margin-top: 25px;
+            display: none;
+            width: 100%;
+            height: 150px; /* Ajustado para que quepa el botón de la API */
+            border: none;
+            border-radius: 15px;
+            background: rgba(255,255,255,0.05);
+        }
     </style>
 </head>
 <body>
 
     <div class="card">
-        <i class="fas fa-headphones-alt" style="font-size: 3rem; color: var(--main); margin-bottom: 20px;"></i>
+        <i class="fas fa-bolt" style="font-size: 3rem; color: var(--accent); margin-bottom: 15px;"></i>
         <h1>Descargador MP3</h1>
-        <p>Alta Calidad 320kbps</p>
+        <p style="opacity: 0.6; margin-bottom: 20px;">Pega el link de YouTube y descarga directo</p>
 
-        <input type="text" id="videoLink" placeholder="Pega el link de YouTube aquí">
+        <input type="text" id="videoUrl" placeholder="https://www.youtube.com/watch?v=...">
         
-        <button class="btn-descargar" onclick="irDescarga()">
-            <i class="fas fa-play"></i> DESCARGAR AHORA
-        </button>
+        <button class="btn-gen" onclick="generar()">GENERAR DESCARGA</button>
 
-        <div style="margin-top: 20px; font-size: 0.8rem; color: #64748b;">
-            * Sin virus, sin errores 404 y sin publicidad en tu web.
-        </div>
+        <iframe id="download-frame" src=""></iframe>
     </div>
 
     <script>
-        function irDescarga() {
-            const url = document.getElementById('videoLink').value.trim();
+        function generar() {
+            const url = document.getElementById('videoUrl').value.trim();
+            const frame = document.getElementById('download-frame');
+
             if (!url.includes("youtu")) {
                 alert("Por favor inserta un link de YouTube válido.");
                 return;
             }
 
-            // Extraemos el ID del video de forma ultra-segura
-            let videoId = "";
+            // Extraer ID del video
             const regex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/;
             const match = url.match(regex);
             
             if (match && match[1]) {
-                videoId = match[1];
-                // REDIRECCIÓN DIRECTA: GitHub no puede bloquear esto.
-                // Usamos y2mate que es el motor más estable.
-                const downloadUrl = `https://www.y2mate.com/youtube/${videoId}`;
-                window.open(downloadUrl, '_blank');
+                const videoId = match[1];
+                // Usamos un botón de API profesional que NO te saca de la página
+                // y que genera la descarga directamente.
+                frame.src = `https://p.oceansaver.in/api/button/?url=${url}&color=00f2fe`;
+                frame.style.display = "block";
             } else {
-                alert("No se pudo reconocer el video. Revisa el link.");
+                alert("No se pudo leer el ID del video.");
             }
         }
     </script>
