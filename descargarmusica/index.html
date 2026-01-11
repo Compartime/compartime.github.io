@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MusicDownloader | 320kbps High Quality</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #00f2fe;
+            --secondary: #4facfe;
+            --bg: #0b0e14;
+            --card-bg: rgba(255, 255, 255, 0.05);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background-color: var(--bg);
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background-image: radial-gradient(circle at top right, rgba(79, 172, 254, 0.15), transparent),
+                              radial-gradient(circle at bottom left, rgba(0, 242, 254, 0.1), transparent);
+        }
+
+        /* Header */
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        header h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+
+        header p { opacity: 0.6; font-size: 1.1rem; letter-spacing: 1px; }
+
+        /* Contenedor de Búsqueda */
+        .search-container {
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            padding: 40px;
+            border-radius: 30px;
+            border: 1px solid rgba(255,255,255,0.1);
+            width: 90%;
+            max-width: 700px;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.4);
+            text-align: center;
+        }
+
+        .input-group {
+            position: relative;
+            margin-bottom: 25px;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 18px 25px;
+            background: rgba(0,0,0,0.3);
+            border: 2px solid rgba(255,255,255,0.1);
+            border-radius: 15px;
+            color: white;
+            font-size: 1rem;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        input[type="text"]:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 15px rgba(0, 242, 254, 0.2);
+        }
+
+        .format-selector {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .format-chip {
+            padding: 10px 20px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: 0.3s;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .format-chip.active {
+            background: var(--primary);
+            color: #000;
+            border-color: var(--primary);
+        }
+
+        .btn-download {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            border: none;
+            border-radius: 15px;
+            color: #000;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn-download:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0, 242, 254, 0.4);
+        }
+
+        /* Resultados */
+        .result-info {
+            margin-top: 30px;
+            display: none;
+            text-align: left;
+            padding: 20px;
+            background: rgba(0,0,0,0.2);
+            border-radius: 15px;
+            animation: slideUp 0.5s ease;
+        }
+
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        .loader {
+            display: none;
+            margin: 20px auto;
+            border: 4px solid rgba(255,255,255,0.1);
+            border-left-color: var(--primary);
+            border-radius: 50%;
+            width: 30px; height: 30px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>MusicDownloader</h1>
+        <p>CONVIERTE Y DESCARGA EN ALTA FIDELIDAD</p>
+    </header>
+
+    <div class="search-container">
+        <div class="input-group">
+            <input type="text" id="urlInput" placeholder="Pega el enlace de YouTube aquí...">
+        </div>
+
+        <div class="format-selector">
+            <div class="format-chip active">MP3 320kbps</div>
+            <div class="format-chip">MP3 256kbps</div>
+            <div class="format-chip">FLAC</div>
+        </div>
+
+        <button class="btn-download" onclick="startDownload()">
+            <i class="fas fa-cloud-download-alt"></i>
+            GENERAR ENLACE
+        </button>
+
+        <div class="loader" id="loader"></div>
+
+        <div class="result-info" id="result">
+            <div style="display: flex; gap: 15px; align-items: center;">
+                <img src="https://via.placeholder.com/80" id="thumb" style="border-radius: 10px;">
+                <div>
+                    <h4 id="songTitle">Nombre de la canción</h4>
+                    <p style="font-size: 0.8rem; opacity: 0.6; margin-top: 5px;">Calidad: 320 kbps | Tamaño: 9.5 MB</p>
+                    <a href="#" id="finalLink" style="color: var(--primary); text-decoration: none; font-weight: bold; font-size: 0.9rem; display: block; margin-top: 8px;">¡Listo! Haz clic para bajar</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function startDownload() {
+            const url = document.getElementById('urlInput').value;
+            if(!url) { alert("Por favor pega un enlace válido"); return; }
+
+            const loader = document.getElementById('loader');
+            const result = document.getElementById('result');
+            
+            loader.style.display = "block";
+            result.style.display = "none";
+
+            // Simulación de conversión (Aquí conectarías con una API real)
+            setTimeout(() => {
+                loader.style.display = "none";
+                result.style.display = "block";
+                document.getElementById('songTitle').innerText = "Tu Música Favorita.mp3";
+                // En una app real, aquí pondrías el link generado por el servidor
+                document.getElementById('finalLink').href = "#"; 
+                alert("Simulación: Enlace de 320kbps generado correctamente.");
+            }, 3000);
+        }
+
+        // Selector de calidad
+        const chips = document.querySelectorAll('.format-chip');
+        chips.forEach(chip => {
+            chip.addEventListener('click', () => {
+                chips.forEach(c => c.classList.remove('active'));
+                chip.classList.add('active');
+            });
+        });
+    </script>
+</body>
+</html>
