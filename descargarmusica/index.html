@@ -3,81 +3,75 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Descargador MP3 Real</title>
+    <title>Descargador MP3 Directo</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        :root { --accent: #00d2ff; --bg: #0f172a; }
         body {
-            font-family: 'Arial', sans-serif;
-            background: #0a0a0c;
-            color: white;
+            font-family: 'Segoe UI', sans-serif;
+            background: var(--bg); color: white;
             display: flex; align-items: center; justify-content: center;
             height: 100vh; margin: 0;
         }
         .container {
-            background: #161b22;
-            padding: 30px; border-radius: 20px;
-            width: 90%; max-width: 400px;
-            text-align: center; border: 2px solid #30363d;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.8);
+            background: #1e293b; padding: 35px; border-radius: 25px;
+            width: 90%; max-width: 420px; text-align: center;
+            border: 1px solid #334155; box-shadow: 0 20px 50px rgba(0,0,0,0.5);
         }
-        h1 { color: #58a6ff; font-size: 1.5rem; margin-bottom: 20px; }
+        h1 { color: var(--accent); margin-bottom: 20px; font-size: 1.8rem; }
         input {
-            width: 100%; padding: 15px; margin-bottom: 15px;
-            border-radius: 10px; border: 1px solid #30363d;
-            background: #010409; color: white; outline: none;
-            box-sizing: border-box;
+            width: 100%; padding: 15px; border-radius: 12px;
+            border: 2px solid #334155; background: #0f172a;
+            color: white; font-size: 1rem; margin-bottom: 20px; outline: none;
         }
-        .btn {
-            width: 100%; padding: 15px; border-radius: 10px;
-            background: #238636; color: white;
-            border: none; font-weight: bold; cursor: pointer;
-            font-size: 1.1rem;
+        .btn-descarga {
+            width: 100%; padding: 16px; border-radius: 12px;
+            background: var(--accent); color: #0f172a;
+            border: none; font-weight: 800; cursor: pointer;
+            font-size: 1rem; transition: 0.3s;
         }
-        .btn:hover { background: #2ea043; }
-        .footer { margin-top: 15px; font-size: 0.75rem; color: #8b949e; }
+        #api-frame {
+            margin-top: 20px;
+            display: none;
+            width: 100%;
+            height: 100px;
+            border: none;
+            background: rgba(255,255,255,0.05);
+            border-radius: 15px;
+        }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <i class="fab fa-youtube" style="font-size: 3rem; color: #ff0000; margin-bottom: 10px;"></i>
-    <h1>Bajar Música MP3</h1>
-    
-    <input type="text" id="ytUrl" placeholder="Pega el link de YouTube aquí...">
-    
-    <button class="btn" onclick="descargarAhora()">
-        <i class="fas fa-download"></i> DESCARGAR AHORA
-    </button>
+    <div class="container">
+        <i class="fas fa-headphones-alt" style="font-size: 3rem; color: var(--accent); margin-bottom: 15px;"></i>
+        <h1>Descargador MP3</h1>
+        <p style="opacity: 0.7; font-size: 0.9rem; margin-bottom: 20px;">Pega el link de YouTube y toca el botón</p>
 
-    <div class="footer">
-        Al hacer clic, te llevaremos al servidor de descarga directa sin anuncios en tu página.
-    </div>
-</div>
-
-<script>
-    function descargarAhora() {
-        const url = document.getElementById('ytUrl').value.trim();
-        if (!url.includes("youtu")) {
-            alert("Por favor pega un link de YouTube válido.");
-            return;
-        }
-
-        // Este método convierte el link y te manda directo al botón de bajar.
-        // Es el que usan las extensiones de Chrome para no ser bloqueadas.
-        let id = "";
-        const regex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/;
-        const match = url.match(regex);
+        <input type="text" id="videoLink" placeholder="https://www.youtube.com/watch?v=...">
         
-        if (match && match[1]) {
-            id = match[1];
-            // Usamos el motor de yt5s.io que es el más estable actualmente
-            const directUrl = `https://yt5s.io/es/youtube-to-mp3/${id}`;
-            window.open(directUrl, '_blank');
-        } else {
-            alert("No se pudo leer el link. Intenta con otro.");
-        }
-    }
-</script>
+        <button class="btn-descarga" onclick="descargar()">
+            <i class="fas fa-magic"></i> PROCESAR MÚSICA
+        </button>
 
+        <iframe id="api-frame" scrolling="no"></iframe>
+    </div>
+
+    <script>
+        function descargar() {
+            const url = document.getElementById('videoLink').value.trim();
+            const frame = document.getElementById('api-frame');
+
+            if (!url.includes("youtu")) {
+                alert("Por favor inserta un link de YouTube válido.");
+                return;
+            }
+
+            // Usamos un widget de descarga que NO hace redirecciones locas.
+            // Genera un botón de "Download" directamente en tu página.
+            frame.src = `https://p.oceansaver.in/api/button/?url=${encodeURIComponent(url)}&color=00d2ff`;
+            frame.style.display = "block";
+        }
+    </script>
 </body>
 </html>
