@@ -6,72 +6,83 @@
     <title>Descargador MP3 Directo</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root { --accent: #00d2ff; --bg: #0f172a; }
         body {
             font-family: 'Segoe UI', sans-serif;
-            background: var(--bg); color: white;
+            background: #0f172a;
+            color: white;
             display: flex; align-items: center; justify-content: center;
             height: 100vh; margin: 0;
         }
         .container {
-            background: #1e293b; padding: 35px; border-radius: 25px;
-            width: 90%; max-width: 420px; text-align: center;
-            border: 1px solid #334155; box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            background: #1e293b;
+            padding: 40px; border-radius: 20px;
+            width: 90%; max-width: 400px;
+            text-align: center; border: 1px solid #334155;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
-        h1 { color: var(--accent); margin-bottom: 20px; font-size: 1.8rem; }
+        h1 { color: #38bdf8; margin-bottom: 20px; }
         input {
-            width: 100%; padding: 15px; border-radius: 12px;
-            border: 2px solid #334155; background: #0f172a;
-            color: white; font-size: 1rem; margin-bottom: 20px; outline: none;
+            width: 100%; padding: 15px; margin-bottom: 20px;
+            border-radius: 10px; border: 1px solid #334155;
+            background: #0f172a; color: white; outline: none;
+            font-size: 1rem;
         }
         .btn-descarga {
-            width: 100%; padding: 16px; border-radius: 12px;
-            background: var(--accent); color: #0f172a;
-            border: none; font-weight: 800; cursor: pointer;
-            font-size: 1rem; transition: 0.3s;
+            width: 100%; padding: 15px; border-radius: 10px;
+            background: #38bdf8; color: #0f172a;
+            border: none; font-weight: bold; cursor: pointer;
+            font-size: 1.1rem; transition: 0.3s;
         }
-        #api-frame {
-            margin-top: 20px;
+        #box-descarga {
+            margin-top: 25px;
             display: none;
+            background: rgba(0,0,0,0.3);
+            padding: 15px;
+            border-radius: 12px;
+        }
+        iframe {
             width: 100%;
-            height: 100px;
+            height: 60px;
             border: none;
-            background: rgba(255,255,255,0.05);
-            border-radius: 15px;
         }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <i class="fas fa-headphones-alt" style="font-size: 3rem; color: var(--accent); margin-bottom: 15px;"></i>
-        <h1>Descargador MP3</h1>
-        <p style="opacity: 0.7; font-size: 0.9rem; margin-bottom: 20px;">Pega el link de YouTube y toca el botón</p>
+<div class="container">
+    <i class="fas fa-cloud-download-alt" style="font-size: 3rem; color: #38bdf8; margin-bottom: 15px;"></i>
+    <h1>MP3 Downloader</h1>
+    
+    <input type="text" id="urlInput" placeholder="Pega el link de YouTube aquí">
+    
+    <button class="btn-descarga" onclick="generarBoton()">
+        <i class="fas fa-cog"></i> PREPARAR MP3
+    </button>
 
-        <input type="text" id="videoLink" placeholder="https://www.youtube.com/watch?v=...">
-        
-        <button class="btn-descarga" onclick="descargar()">
-            <i class="fas fa-magic"></i> PROCESAR MÚSICA
-        </button>
-
-        <iframe id="api-frame" scrolling="no"></iframe>
+    <div id="box-descarga">
+        <p style="margin-bottom: 10px; font-size: 0.9rem; color: #38bdf8;">¡Listo! Toca el botón de abajo:</p>
+        <div id="iframe-place"></div>
     </div>
+</div>
 
-    <script>
-        function descargar() {
-            const url = document.getElementById('videoLink').value.trim();
-            const frame = document.getElementById('api-frame');
+<script>
+    function generarBoton() {
+        const url = document.getElementById('urlInput').value.trim();
+        const box = document.getElementById('box-descarga');
+        const place = document.getElementById('iframe-place');
 
-            if (!url.includes("youtu")) {
-                alert("Por favor inserta un link de YouTube válido.");
-                return;
-            }
-
-            // Usamos un widget de descarga que NO hace redirecciones locas.
-            // Genera un botón de "Download" directamente en tu página.
-            frame.src = `https://p.oceansaver.in/api/button/?url=${encodeURIComponent(url)}&color=00d2ff`;
-            frame.style.display = "block";
+        if (!url.includes("youtu")) {
+            alert("Por favor pega un enlace de YouTube válido.");
+            return;
         }
-    </script>
+
+        box.style.display = "block";
+        
+        // Usamos la API de convert2mp3s que genera un botón REAL dentro de tu página
+        // Sin redirecciones a la home de otros sitios.
+        place.innerHTML = `<iframe src="https://convert2mp3s.com/api/button/mp3?url=${encodeURIComponent(url)}" scrolling="no"></iframe>`;
+    }
+</script>
+
 </body>
 </html>
