@@ -3,87 +3,77 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Descarga MP3 Directa</title>
+    <title>Descargador MP3 Seguro</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Segoe UI', sans-serif;
             background: #0f172a;
             color: white;
             display: flex; align-items: center; justify-content: center;
-            height: 100vh;
+            height: 100vh; margin: 0;
         }
-        .container {
+        .card {
             background: #1e293b;
-            padding: 35px; border-radius: 25px;
-            width: 90%; max-width: 450px;
-            text-align: center; border: 1px solid #334155;
+            padding: 40px; border-radius: 24px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.4);
+            width: 90%; max-width: 420px; text-align: center;
+            border: 1px solid #334155;
         }
         h1 { color: #38bdf8; margin-bottom: 10px; font-size: 1.8rem; }
         input {
             width: 100%; padding: 15px; margin: 20px 0;
             border-radius: 12px; border: 2px solid #334155;
             background: #0f172a; color: white; outline: none;
+            font-size: 1rem;
         }
-        input:focus { border-color: #38bdf8; }
-        .btn-go {
-            width: 100%; padding: 15px; border-radius: 12px;
+        .btn-dl {
+            width: 100%; padding: 16px; border-radius: 12px;
             background: #38bdf8; color: #0f172a;
             border: none; font-weight: 800; cursor: pointer;
             font-size: 1rem; transition: 0.3s;
         }
-        .btn-go:hover { background: #7dd3fc; transform: translateY(-2px); }
-        #status { margin-top: 20px; color: #94a3b8; font-size: 0.9rem; display: none; }
+        .btn-dl:hover { background: #7dd3fc; transform: scale(1.02); }
+        .info { font-size: 0.8rem; color: #94a3b8; margin-top: 15px; }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <i class="fas fa-music" style="font-size: 2.5rem; color: #38bdf8; margin-bottom: 15px;"></i>
-        <h1>Music Downloader</h1>
-        <p>Convertidor de YouTube a MP3 Seguro</p>
+    <div class="card">
+        <i class="fas fa-bolt" style="font-size: 3rem; color: #38bdf8; margin-bottom: 20px;"></i>
+        <h1>Descargar MP3</h1>
+        <p>Alta calidad • Sin errores de carga</p>
 
-        <input type="text" id="videoUrl" placeholder="Pega el enlace de YouTube aquí...">
+        <input type="text" id="videoUrl" placeholder="Pega el link de YouTube aquí...">
         
-        <button class="btn-go" onclick="descargarAhora()">
-            <i class="fas fa-download"></i> OBTENER MP3
+        <button class="btn-dl" onclick="irADescarga()">
+            <i class="fas fa-rocket"></i> DESCARGAR AHORA
         </button>
 
-        <div id="status">Conectando con el servidor de audio...</div>
+        <p class="info">Al hacer clic, se abrirá el procesador seguro para bajar tu archivo.</p>
     </div>
 
     <script>
-        function descargarAhora() {
+        function irADescarga() {
             const url = document.getElementById('videoUrl').value;
-            const status = document.getElementById('status');
-
             if (!url.includes("youtu")) {
                 alert("Por favor inserta un link de YouTube válido.");
                 return;
             }
 
-            status.style.display = "block";
-            status.innerText = "Abriendo panel de descarga segura...";
-
-            // Extraer ID del video para asegurar compatibilidad
+            // Extraemos el ID del video
             let videoId = "";
-            if(url.includes("v=")) {
-                videoId = url.split("v=")[1].split("&")[0];
-            } else {
-                videoId = url.split("/").pop().split("?")[0];
-            }
-
-            // MÉTODO DEFINITIVO: Redirección a un motor de descarga limpio (Y2mate API)
-            // Este método no falla nunca porque el procesamiento ocurre en su servidor
-            const apiLink = `https://www.y2mate.com/youtube/${videoId}`;
+            const regex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/;
+            const match = url.match(regex);
             
-            // Abrimos en una pestaña nueva para que GitHub no bloquee la descarga
-            window.open(apiLink, '_blank');
-
-            setTimeout(() => {
-                status.innerText = "¡Listo! Selecciona 'MP3' en la nueva pestaña.";
-            }, 2000);
+            if (match && match[1]) {
+                videoId = match[1];
+                // Este servicio es el más estable y no falla en GitHub
+                const downloadUrl = `https://y2mate.nu/es/youtube/${videoId}`;
+                window.open(downloadUrl, '_blank');
+            } else {
+                alert("No pudimos leer el ID del video. Revisa el link.");
+            }
         }
     </script>
 </body>
