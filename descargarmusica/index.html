@@ -3,54 +3,47 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Descargador MP3 | Funcionando</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>MP3 Downloader Directo</title>
     <style>
-        body { font-family: sans-serif; background: #0f172a; color: white; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; }
-        .card { background: #1e293b; padding: 30px; border-radius: 20px; text-align: center; width: 90%; max-width: 400px; border: 1px solid #334155; }
-        h1 { color: #38bdf8; margin-bottom: 20px; }
-        input { width: 100%; padding: 15px; margin-bottom: 20px; border-radius: 10px; border: none; outline: none; font-size: 1rem; box-sizing: border-box; }
-        .btn { width: 100%; padding: 15px; border-radius: 10px; background: #22c55e; color: white; border: none; font-weight: bold; cursor: pointer; font-size: 1.1rem; }
-        .note { margin-top: 15px; font-size: 0.8rem; color: #94a3b8; }
+        body { font-family: sans-serif; background: #111; color: white; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; }
+        .card { background: #222; padding: 30px; border-radius: 15px; text-align: center; width: 90%; max-width: 400px; border: 1px solid #444; }
+        h1 { color: #00ff88; margin-bottom: 20px; }
+        input { width: 100%; padding: 12px; margin-bottom: 20px; border-radius: 5px; border: 1px solid #444; background: #000; color: white; box-sizing: border-box; }
+        button { width: 100%; padding: 15px; border-radius: 5px; background: #00ff88; color: black; border: none; font-weight: bold; cursor: pointer; font-size: 1rem; }
+        button:hover { background: #00cc6e; }
+        p { font-size: 0.8rem; color: #888; margin-top: 15px; }
     </style>
 </head>
 <body>
 
 <div class="card">
-    <h1>Descarga MP3</h1>
-    <p>Copiado de link a descarga directa</p>
-    
+    <h1>Descargar Música</h1>
     <input type="text" id="link" placeholder="Pega el link de YouTube aquí">
-    
-    <button class="btn" onclick="descargar()">
-        <i class="fas fa-download"></i> BAJAR MÚSICA AHORA
-    </button>
-
-    <div class="note">
-        * Se abrirá el servidor de descarga oficial en una pestaña nueva.
-    </div>
+    <button onclick="bajar()">DESCARGAR MP3</button>
+    <p>Se abrirá una pestaña con el convertidor directo.</p>
 </div>
 
 <script>
-    function descargar() {
-        var input = document.getElementById('link').value;
-        if (!input.includes("youtu")) {
-            alert("Pega un link de YouTube válido");
+    function bajar() {
+        var input = document.getElementById('link').value.trim();
+        if (input === "") {
+            alert("Pega un link primero");
             return;
         }
-
-        // Este es el único motor que no bloquea a GitHub
-        // Al usar 'ss' antes de 'youtube', forzamos al navegador a salir de GitHub
-        var id = "";
+        
+        // Limpiamos el link para evitar errores de redirección
+        var videoId = "";
         if (input.includes("v=")) {
-            id = input.split("v=")[1].split("&")[0];
+            videoId = input.split("v=")[1].split("&")[0];
         } else if (input.includes("youtu.be/")) {
-            id = input.split("youtu.be/")[1].split("?")[0];
+            videoId = input.split("youtu.be/")[1].split("?")[0];
+        } else {
+            videoId = input; // Por si pegan solo el ID
         }
 
-        // MÉTODO DE SALTO DIRECTO
-        var finalUrl = "https://www.ssyoutube.com/watch?v=" + id;
-        window.open(finalUrl, '_blank');
+        // Este motor es el que mejor funciona con links externos
+        var urlFinal = "https://www.y2mate.com/youtube/" + videoId;
+        window.open(urlFinal, '_blank');
     }
 </script>
 
