@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Xat Namewave | Generador</title>
+    <style>
+        :root { --accent: #00ff88; --bg: #0a0a0c; }
+        body { font-family: 'Arial', sans-serif; background: var(--bg); color: white; display: flex; justify-content: center; padding: 20px; margin: 0; }
+        .card { background: #161b22; padding: 25px; border-radius: 15px; width: 100%; max-width: 450px; border: 1px solid #30363d; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        
+        h1 { font-size: 1.1rem; text-align: center; color: var(--accent); margin-bottom: 20px; text-transform: uppercase; }
+        
+        /* Preview */
+        .preview-box { background: #000; padding: 35px 10px; border-radius: 10px; text-align: center; margin-bottom: 20px; border: 1px solid #444; overflow: hidden; }
+        #preview-nick { font-size: 30px; font-weight: 900; display: inline-block; background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+
+        @keyframes move { 0% { background-position: 0% 50%; } 100% { background-position: 200% 50%; } }
+
+        .input-group { margin-bottom: 15px; }
+        label { display: block; font-size: 0.7rem; color: #8b949e; margin-bottom: 5px; font-weight: bold; }
+        input[type="text"] { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #30363d; background: #0d1117; color: white; box-sizing: border-box; outline: none; }
+        
+        .color-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+        input[type="color"] { width: 100%; height: 40px; border: none; cursor: pointer; background: none; padding: 0; }
+
+        .result-container { margin-top: 20px; background: #010409; border: 1px solid var(--accent); border-radius: 8px; padding: 15px; text-align: center; }
+        #final-code { font-family: monospace; color: var(--accent); font-size: 0.9rem; word-break: break-all; display: block; margin-bottom: 15px; }
+        
+        .btn-copy { background: var(--accent); color: black; border: none; width: 100%; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.2s; }
+        .btn-copy:hover { transform: scale(1.02); background: #00e67a; }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h1>Xat Generador Codigo NAMEWAVE</h1>
+
+    <div class="preview-box">
+        <span id="preview-nick">Nick</span>
+    </div>
+
+    <div class="input-group">
+        <label>TU NICKNAME:</label>
+        <input type="text" id="nick" value="Nombre" oninput="generar()">
+    </div>
+
+    <div class="color-row">
+        <div class="input-group">
+            <label>GLOW COLOR:</label>
+            <input type="color" id="glow" value="#ffffff" oninput="generar()">
+        </div>
+        <div class="input-group">
+            <label>WAVE COLOR 1:</label>
+            <input type="color" id="c1" value="#ff00ff" oninput="generar()">
+        </div>
+        <div class="input-group">
+            <label>WAVE COLOR 2:</label>
+            <input type="color" id="c2" value="#800080" oninput="generar()">
+        </div>
+    </div>
+
+    <div class="input-group">
+        <label>VELOCIDAD DE ONDA:</label>
+        <input type="range" id="spd" min="1" max="9" value="4" style="width: 100%" oninput="generar()">
+    </div>
+
+    <div class="result-container">
+        <label style="color: var(--accent); font-size: 0.65rem; margin-bottom: 8px; display: block;">CÓDIGO ÚNICO (TODO EN UNO):</label>
+        <span id="final-code"></span>
+        <button class="btn-copy" onclick="copiar()">COPIAR CÓDIGO</button>
+    </div>
+</div>
+
+<script>
+    function generar() {
+        const nick = document.getElementById('nick').value.trim() || "Nick";
+        const glow = document.getElementById('glow').value.replace('#', '').toLowerCase();
+        const w1 = document.getElementById('c1').value.replace('#', '').toLowerCase();
+        const w2 = document.getElementById('c2').value.replace('#', '').toLowerCase();
+        const spd = document.getElementById('spd').value;
+
+        const preview = document.getElementById('preview-nick');
+        const codeDisplay = document.getElementById('final-code');
+
+        // Efecto visual en la web
+        preview.innerText = nick;
+        preview.style.backgroundImage = `linear-gradient(90deg, #${w1}, #${w2}, #${w1})`;
+        preview.style.filter = `drop-shadow(0 0 5px #${glow})`;
+        preview.style.animation = `move ${(10-spd)*0.3}s linear infinite`;
+
+        // EL CÓDIGO EN UN SOLO PARENTESIS
+        // Formato: Nick(glow#color#wave#color1#color2#velocidad)
+        const codigoTodoEnUno = `${nick}(glow#${glow}#wave#${w1}#${w2}#${spd})`;
+        
+        codeDisplay.innerText = codigoTodoEnUno;
+    }
+
+    function copiar() {
+        const text = document.getElementById('final-code').innerText;
+        navigator.clipboard.writeText(text);
+        alert("¡Copiado! Pegalo directo en tu nick de xat.");
+    }
+
+    generar();
+</script>
+
+</body>
+</html>
