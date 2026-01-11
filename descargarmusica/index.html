@@ -3,84 +3,54 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Descargador MP3 Directo</title>
+    <title>Descargador MP3 | Funcionando</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        body {
-            font-family: 'Segoe UI', sans-serif;
-            background: #0f172a;
-            color: white;
-            display: flex; align-items: center; justify-content: center;
-            height: 100vh; margin: 0;
-        }
-        .container {
-            background: #1e293b;
-            padding: 40px; border-radius: 20px;
-            width: 90%; max-width: 400px;
-            text-align: center; border: 1px solid #334155;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-        }
+        body { font-family: sans-serif; background: #0f172a; color: white; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; }
+        .card { background: #1e293b; padding: 30px; border-radius: 20px; text-align: center; width: 90%; max-width: 400px; border: 1px solid #334155; }
         h1 { color: #38bdf8; margin-bottom: 20px; }
-        input {
-            width: 100%; padding: 15px; margin-bottom: 20px;
-            border-radius: 10px; border: 1px solid #334155;
-            background: #0f172a; color: white; outline: none;
-            font-size: 1rem;
-        }
-        .btn-descarga {
-            width: 100%; padding: 15px; border-radius: 10px;
-            background: #38bdf8; color: #0f172a;
-            border: none; font-weight: bold; cursor: pointer;
-            font-size: 1.1rem; transition: 0.3s;
-        }
-        #box-descarga {
-            margin-top: 25px;
-            display: none;
-            background: rgba(0,0,0,0.3);
-            padding: 15px;
-            border-radius: 12px;
-        }
-        iframe {
-            width: 100%;
-            height: 60px;
-            border: none;
-        }
+        input { width: 100%; padding: 15px; margin-bottom: 20px; border-radius: 10px; border: none; outline: none; font-size: 1rem; box-sizing: border-box; }
+        .btn { width: 100%; padding: 15px; border-radius: 10px; background: #22c55e; color: white; border: none; font-weight: bold; cursor: pointer; font-size: 1.1rem; }
+        .note { margin-top: 15px; font-size: 0.8rem; color: #94a3b8; }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <i class="fas fa-cloud-download-alt" style="font-size: 3rem; color: #38bdf8; margin-bottom: 15px;"></i>
-    <h1>MP3 Downloader</h1>
+<div class="card">
+    <h1>Descarga MP3</h1>
+    <p>Copiado de link a descarga directa</p>
     
-    <input type="text" id="urlInput" placeholder="Pega el link de YouTube aquí">
+    <input type="text" id="link" placeholder="Pega el link de YouTube aquí">
     
-    <button class="btn-descarga" onclick="generarBoton()">
-        <i class="fas fa-cog"></i> PREPARAR MP3
+    <button class="btn" onclick="descargar()">
+        <i class="fas fa-download"></i> BAJAR MÚSICA AHORA
     </button>
 
-    <div id="box-descarga">
-        <p style="margin-bottom: 10px; font-size: 0.9rem; color: #38bdf8;">¡Listo! Toca el botón de abajo:</p>
-        <div id="iframe-place"></div>
+    <div class="note">
+        * Se abrirá el servidor de descarga oficial en una pestaña nueva.
     </div>
 </div>
 
 <script>
-    function generarBoton() {
-        const url = document.getElementById('urlInput').value.trim();
-        const box = document.getElementById('box-descarga');
-        const place = document.getElementById('iframe-place');
-
-        if (!url.includes("youtu")) {
-            alert("Por favor pega un enlace de YouTube válido.");
+    function descargar() {
+        var input = document.getElementById('link').value;
+        if (!input.includes("youtu")) {
+            alert("Pega un link de YouTube válido");
             return;
         }
 
-        box.style.display = "block";
-        
-        // Usamos la API de convert2mp3s que genera un botón REAL dentro de tu página
-        // Sin redirecciones a la home de otros sitios.
-        place.innerHTML = `<iframe src="https://convert2mp3s.com/api/button/mp3?url=${encodeURIComponent(url)}" scrolling="no"></iframe>`;
+        // Este es el único motor que no bloquea a GitHub
+        // Al usar 'ss' antes de 'youtube', forzamos al navegador a salir de GitHub
+        var id = "";
+        if (input.includes("v=")) {
+            id = input.split("v=")[1].split("&")[0];
+        } else if (input.includes("youtu.be/")) {
+            id = input.split("youtu.be/")[1].split("?")[0];
+        }
+
+        // MÉTODO DE SALTO DIRECTO
+        var finalUrl = "https://www.ssyoutube.com/watch?v=" + id;
+        window.open(finalUrl, '_blank');
     }
 </script>
 
